@@ -2,11 +2,29 @@ import random
 import socket
 
 class GuessingGameServer:
-    def __init__(self, host="0.0.0.0", port=7777):
+    def __init__(self, host="0.0.0.0", port=7777, rng=None):
         self.host = host
         self.port = port
-        self.secret_number = random.randint(1, 100)
+        self.rng = rng or random
+        self.secret_number = self.rng.randint(1, 100)
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    def evaluate_guess(self, guess, counter):
+        if guess < self.secret_number:
+            return "Too low!", False
+        elif guess > self.secret_number:
+            return "Too high!", False
+        else:
+            response = f"Correct! You win!: {counter} guesses"
+            if counter <= 5:
+                response += " = very good"
+            elif counter <= 10:
+                response += " = good"
+            else:
+                response += " = fair"
+            self.secret_number = self.rng.randint(1, 100)
+            return response, True
+
 
     def start(self):
         self.server_socket.bind((self.host, self.port))
