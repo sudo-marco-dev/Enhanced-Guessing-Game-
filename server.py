@@ -1,3 +1,5 @@
+#Marco Dela Serna
+#juliet Tumalac
 import random
 import socket
 
